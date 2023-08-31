@@ -1,0 +1,38 @@
+<html lang="en">
+<head>
+    <title>Camel Quarkus Server Sent Events Demo</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            max-width: 80%;
+        }
+
+        .grid-item {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="grid-item">
+            <canvas id="memory-used"></canvas>
+        </div>
+        <div class="grid-item">
+            <canvas id="file-descriptors"></canvas>
+        </div>
+        <div class="grid-item">
+            <canvas id="process-cpu-usage"></canvas>
+        </div>
+        <div class="grid-item">
+            <canvas id="system-cpu-usage"></canvas>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
+    <script type="text/javascript" src="/js/app.js"></script>
+</body>
+</html>
