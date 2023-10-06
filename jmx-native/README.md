@@ -1,8 +1,8 @@
-# Server Sent Events with Camel Quarkus
+# JMX With Camel Quarkus
 
-A demo of using Camel Quarkus and Server Sent Events. Its companion blog post can be found here:
+A demo of using Camel Quarkus and JMX:
 
-https://jamesnetherton.github.io/blog/2023-08-31-server-sent-events-with-camel-quarkus
+https://jamesnetherton.github.io/blog/2023-10-04-jmx-in-camel-quarkus-native-mode
 
 ## Running the application in dev mode
 
@@ -40,12 +40,10 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 ./mvnw package -Dnative -Dquarkus.native.container-build=true
 ```
 
-You can then execute your native executable with: `./target/*-runner`
+You can then execute your native executable with: `./target/*-runner -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=9996 -Dcom.sun.management.jmxremote.ssl=false`
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
 
-## Web UI
+## JConsole
 
-This application exposes a UI to chart some simple runtime metrics:
-
-http://localhost:8080
+Start up `jconsole` and connect to the application process to start interacting with the exposed MBeans.
