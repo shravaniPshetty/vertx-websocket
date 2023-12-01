@@ -1,6 +1,7 @@
 package org.acme;
 
 import io.quarkus.test.common.http.TestHTTPResource;
+import io.quarkus.test.junit.DisabledOnIntegrationTest;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -21,6 +22,7 @@ public class RuntimeMetricsTest {
     @TestHTTPResource("/metrics")
     URI metricsUri;
 
+    @DisabledOnIntegrationTest
     @Test
     public void testMetricsServerSentEvents() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
