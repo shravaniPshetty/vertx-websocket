@@ -43,9 +43,24 @@ public class WebSocketRoutes extends RouteBuilder {
 
                 // Capture MESSAGE events and broadcast them to all connected peers
                 .when(simple("${header.CamelVertxWebsocket.event} == 'MESSAGE'"))
-                .log("New message from user ${header.userName}: ${body}")
-                .setBody().simple("<<<<< ${header.userName}: ${body}")
-                .to("vertx-websocket:/chat/{userName}?sendToAll=true")
+                .choice()
+                    .when(body().contains("recipientName"))
+                        .process(exchange -> {
+                            Message message = exchange.getMessage();
+                            String messageContent = message.getBody(String.class);
+
+                            String[] parts = messageContent.split(" ", 2);
+                            String receiverName = parts[0];
+                            String Message = parts[1];
+                            String recipientConnectionKey = sessionManager.getConnectionKey(receiverName);
+                            exchange.getMessage().setHeader(VertxWebsocketConstants.CONNECTION_KEY, recipientConnectionKey);
+                            exchange.getMessage().setBody("<<<<< ${header.userName}: ${Message}");
+                        })
+                        .to("vertx-websocket:/chat/{userName}")
+                    .otherwise()
+                        .log("New message from user ${header.userName}: ${body}")
+                        .setBody().simple("<<<<< ${header.userName}: ${body}")
+                        .to("vertx-websocket:/chat/{userName}?sendToAll=true")
                 .endChoice()
 
                 // Capture CLOSE events to track peers disconnecting

@@ -48,8 +48,13 @@
                     <label for="message" class="col-form-label">Message</label>
                     <input type="text" class="form-control"  id="message" style="width:50%"/>
                 </div>
-                <div class="mb-3">
-                    <button type="button" class="btn btn-primary" id="send" onclick="sendMessage()">Send</button>
+                <div class="dropdown">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="sending">Send</button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <button class="dropdown-item" type="button" id="send" onclick="sendMessage()">SendAll</button>
+                        <button class="dropdown-item" type="button" onclick="sendDM()">DM</button>
+                        <input type="text" class="form-control" id="peerName" placeholder="SendTO" maxlength="50" style="width:55%"/>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -61,6 +66,7 @@
         const message = $("#message");
         const connectDialog = $("#connect-dialog");
         const chatDialog = $("#chat-dialog");
+        const reciever = $("#peerName");
         let socket;
 
         userName.val("");
@@ -114,6 +120,24 @@
                 socket.send(message.val());
                 chat.val(chat.val() + ">>>>> " + userName.val() + ": " + message.val() + "\n");
                 message.val("");
+                scrollChat();
+            }
+        }
+
+        function sendDM(){
+            let recipient = $("#peerName").val().trim();
+            console.log(recipient);
+
+            let data = {
+            recipientName: recipient,
+            messageContent: message
+            };
+
+            if (recipient.length && message.length) {
+                socket.send(JSON.stringify(data));
+                chat.val(chat.val() + ">>>>> " + userName.val() + ": " + message.val() + "\n");
+                message.val("");
+                reciever.val("");
                 scrollChat();
             }
         }
