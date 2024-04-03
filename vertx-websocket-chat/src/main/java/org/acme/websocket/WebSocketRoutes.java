@@ -45,17 +45,16 @@ public class WebSocketRoutes extends RouteBuilder {
                 .when(simple("${header.CamelVertxWebsocket.event} == 'MESSAGE'"))
                 .choice()
                     .when(body().contains("recipientName"))
+                        .unmarshal().json(ChatMessage.class)
                         .process(exchange -> {
                             Message message = exchange.getMessage();
-                            String messageContent = message.getBody(String.class);
+                            ChatMessage chatMessage = message.getBody(ChatMessage.class);
 
-                            String[] parts = messageContent.split(" ", 2);
-                            String receiverName = parts[0];
-                            String Message = parts[1];
-                            String recipientConnectionKey = sessionManager.getConnectionKey(receiverName);
+                            String recipientConnectionKey = sessionManager.getConnectionKey(chatMessage.getRecipientName());
                             exchange.getMessage().setHeader(VertxWebsocketConstants.CONNECTION_KEY, recipientConnectionKey);
-                            exchange.getMessage().setBody("<<<<< ${header.userName}: ${Message}");
+                            exchange.getMessage().setBody(chatMessage);
                         })
+                        .setBody().simple("<<<<< ${header.userName}: ${body.messageContent}" )
                         .to("vertx-websocket:/chat/{userName}")
                     .otherwise()
                         .log("New message from user ${header.userName}: ${body}")
