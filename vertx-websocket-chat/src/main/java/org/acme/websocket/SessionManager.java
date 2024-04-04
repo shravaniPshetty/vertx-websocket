@@ -1,5 +1,7 @@
 package org.acme.websocket;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,5 +25,13 @@ public class SessionManager {
 
     public boolean isSessionExists(String userName) {
         return SESSIONS.containsKey(userName.toLowerCase());
+    }
+    public String[] getAllConnectedUsers() {
+        String[] connectedUsers = new String[SESSIONS.size()];
+        int index = 0;
+        for (String userName : SESSIONS.keySet()) {
+            connectedUsers[index++] = userName;
+        }
+        return connectedUsers;
     }
 }
