@@ -83,5 +83,9 @@ public class WebSocketRoutes extends RouteBuilder {
                 .setBody().simple("<<<<< ${header.userName} left the chat")
                 .to("vertx-websocket:/chat/{userName}?sendToAll=true")
                 .endChoice();
+
+
+        from("direct:getConnectedUsers")
+             .setBody(method(sessionManager, "getAllConnectedUsers"));
     }
 }

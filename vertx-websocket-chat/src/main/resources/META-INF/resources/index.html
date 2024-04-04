@@ -49,11 +49,9 @@
                     <input type="text" class="form-control"  id="message" style="width:50%"/>
                 </div>
                 <div class="dropdown">
-                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="sending">Send</button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <button class="dropdown-item" type="button" id="send" onclick="sendMessage()">SendAll</button>
-                        <button class="dropdown-item" type="button" onclick="sendDM()">DM</button>
-                        <input type="text" class="form-control" id="peerName" placeholder="SendTO" maxlength="50" style="width:55%"/>
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="sending" onclick="populateUserList()" >Send</button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="userList">
+                        
                     </ul>
                 </div>
             </div>
@@ -66,7 +64,6 @@
         const message = $("#message");
         const connectDialog = $("#connect-dialog");
         const chatDialog = $("#chat-dialog");
-        const reciever = $("#peerName");
         let socket;
 
         userName.val("");
@@ -124,8 +121,8 @@
             }
         }
 
-        function sendDM(){
-            let recipient = $("#peerName").val().trim();
+        function sendDM(user){
+            let recipient = user;
             console.log(recipient);
 
             let data = {
@@ -140,6 +137,38 @@
                 reciever.val("");
                 scrollChat();
             }
+        }
+
+        //dummy
+        function getConnectedUsers() {
+            return fetch('/getConnectedUsers') 
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch connected users');
+                    }
+                    return response.json(); 
+                })
+                .catch(error => {
+                    console.error('Error fetching connected users:', error);
+                    return []; 
+        });
+}
+        // Function to populate user list in dropdown
+        async function populateUserList() {
+            var userList = document.getElementById("userList");
+            userList.innerHTML = ""; 
+            var connectedUsers = await getConnectedUsers();
+            connectedUsers.forEach(function(user) {
+                var listItem = document.createElement("button");
+                listItem.classList.add("dropdown-item");
+                listItem.innerText = user;
+                userList.appendChild(listItem);
+            });
+            var sendAll = document.createElement("button");
+            sendAll.classList.add("dropdown-item");
+            sendAll.innerText = "Send All";
+            sendAll.addEventListener("click",sendMessage)
+            userList.appendChild(sendAll);
         }
 
         function scrollChat() {
